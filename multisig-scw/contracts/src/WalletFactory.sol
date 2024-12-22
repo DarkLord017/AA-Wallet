@@ -21,7 +21,7 @@ contract WalletFactory {
     bytes memory walletInit = abi.encodeCall(Wallet.initialize, owners);
     // Encode the proxyContract's constructor arguments which include the address walletImplementation and the walletInit
     bytes memory proxyConstructor = abi.encode(
-        address(i_walletImplementation),
+        address(i_walletimplementation),
         walletInit
     );
     // Encode the creation code for ERC1967Proxy along with the encoded proxyConstructor data
@@ -51,7 +51,7 @@ function createAccount(
     // If the code is empty, deploy a new Wallet
     bytes memory walletInit = abi.encodeCall(Wallet.initialize, owners);
     ERC1967Proxy proxy = new ERC1967Proxy{salt: bytes32(salt)}(
-        address(i_walletImplementation),
+        address(i_walletimplementation),
         walletInit
     );
 
