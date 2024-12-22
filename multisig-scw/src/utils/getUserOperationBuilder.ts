@@ -1,34 +1,35 @@
-import { prisma } from "@/utils/db";
-import { isAddress } from "ethers/lib/utils";
-import { NextRequest, NextResponse } from "next/server";
+import { BigNumber } from "ethers";
+import { defaultAbiCoder } from "ethers/lib/utils";
+import { UserOperationBuilder } from "userop";
 
-export const dynamic = "force-dynamic";
-
-export async function GET(req: NextRequest) {
+export async function getUserOperationBuilder(
+  walletContract: string,
+  nonce: BigNumber,
+  initCode: Uint8Array,
+  encodedCallData: string,
+  signatures: string[]
+) {
   try {
-    const { searchParams } = new URL(req.url);
-    const walletAddress = searchParams.get("walletAddress");
+    // Encode our signatures into a bytes array
+    const encodedSignatures = defaultAbiCoder.encode(["bytes[]"], [signatures]);
 
-    // Check if walletAddress is provided
-    if (!walletAddress) {
-      throw new Error("Missing or invalid address");
-    }
+    // Use the UserOperationBuilder class to create a new builder
+    // Supply the builder with all the necessary details to create a userOp
+    const builder = new UserOperationBuilder()
+      .useDefaults({
+        preVerificationGas: 100_000,
+        callGasLimit: 100_000,
+        verificationGasLimit: 2_000_000,
+      })
+      .setSender(walletContract)
+      .setNonce(nonce)
+      .setCallData(encodedCallData)
+      .setSignature(encodedSignatures)
+      .setInitCode(initCode);
 
-    // Validate if the provided address is a valid Ethereum address
-    if (!isAddress(walletAddress)) {
-      throw new Error("Invalid Ethereum address");
-    }
-
-    // Use prisma to find the first wallet that matches the provided address
-    const wallet = await prisma.wallet.findFirst({
-      where: {
-        address: walletAddress,
-      },
-    });
-
-    return NextResponse.json(wallet);
-  } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error });
+    return builder;
+  } catch (e) {
+    console.error(e);
+    throw e;
   }
 }

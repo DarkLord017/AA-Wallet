@@ -1,8 +1,7 @@
 import { prisma } from "@/utils/db";
 import { isAddress } from "ethers/lib/utils";
 import { NextRequest, NextResponse } from "next/server";
-import Icon from "./icon";
-import Link from "next/link";
+
 
 export const dynamic = "force-dynamic";
 
