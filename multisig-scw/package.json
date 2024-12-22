@@ -12,9 +12,11 @@
     "@prisma/client": "^6.1.0",
     "@rainbow-me/rainbowkit": "^2.0.0",
     "@tanstack/react-query": "^5.0.0",
+    "ethers": "^5.7.2",
     "next": "14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "userop": "^0.4.0-beta.5",
     "viem": "^2.0.0",
     "wagmi": "^2.0.0"
   },
